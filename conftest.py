@@ -22,6 +22,13 @@ def browser(request):
         print("\nstart chrome browser for test..")
         options = ch_options()
         options.add_experimental_option('prefs', {'intl.accept_languages': user_language})
+
+        options.add_argument("--start-maximized")  # open Browser in maximized mode
+
+        # options.add_argument('--headless')
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
+
         browser = webdriver.Chrome(options=options)
     elif browser_name == "firefox":
         print("\nstart firefox browser for test..")
