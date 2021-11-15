@@ -95,6 +95,7 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     login_page.should_be_login_page()
 
 
+@pytest.mark.skip
 def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
     link_main_page = "http://selenium1py.pythonanywhere.com"
     main_page = MainPage(browser=browser, url=link_main_page)
@@ -105,6 +106,7 @@ def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
     basket_page.should_be_no_items_text()
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize('link', [
     'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019',
 ])
@@ -115,3 +117,36 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser, link
     basket_page = BasketPage(browser, browser.current_url)
     basket_page.should_be_no_products()
     basket_page.should_be_no_items_text()
+
+
+# @pytest.mark.skip
+class TestUserAddToBasketFromProductPage:
+
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        login_page = LoginPage(browser=browser)
+        login_page.open()
+
+        email = str(time.time()) + "@fakemail.org"
+        login_page.register_new_user(email, "d8sus86w621265xgd5w8")
+        login_page.should_be_authorized_user()
+
+    @pytest.mark.parametrize('link', [
+        'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019',
+    ])
+    def test_user_cant_see_success_message(self, browser, link):
+        page = ProductPage(browser=browser, url=link)
+        page.open()
+        page.should_not_be_success_message()
+
+    @pytest.mark.parametrize('link', [
+        'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019'])
+    def test_user_can_add_product_to_basket(self, browser, link):
+        page = ProductPage(browser=browser, url=link)
+        page.open()
+        # time.sleep(3)
+        # page.should_be_product_page()
+        page.add_product_to_basket()
+        page.solve_quiz_and_get_code()
+        page.check_success_addition_product_to_basket()
+        # time.sleep(20)

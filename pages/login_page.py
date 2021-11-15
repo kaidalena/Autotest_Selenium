@@ -4,6 +4,10 @@ from .locators import LoginPageLocators
 
 class LoginPage(BasePage):
 
+    def __init__(self, *args, **kwargs,):
+        kwargs['url'] = kwargs.get('url', 'http://selenium1py.pythonanywhere.com/ru/accounts/login/')
+        super().__init__(*args, **kwargs)
+
     def should_be_login_page(self):
         self.should_be_login_url()
         self.should_be_login_form()
@@ -24,3 +28,8 @@ class LoginPage(BasePage):
         assert self.is_element_present(*LoginPageLocators.REG_PASS), "Not found field for password in registration form"
         assert self.is_element_present(*LoginPageLocators.REG_REP_PASS), "Not found field for repeat password in registration form"
 
+    def register_new_user(self, email, password):
+        self.browser.find_element(*LoginPageLocators.REG_LOGIN).send_keys(email)
+        self.browser.find_element(*LoginPageLocators.REG_PASS).send_keys(password)
+        self.browser.find_element(*LoginPageLocators.REG_REP_PASS).send_keys(password)
+        self.browser.find_element(*LoginPageLocators.REG_BTN).click()
